@@ -1,6 +1,6 @@
 import axios from "axios";
-import { Toastr } from "neetoui";
-import { getFromLocalStorage } from "utils/storage";
+// import { Toastr } from "neetoui";
+// import { getFromLocalStorage } from "utils/storage";
 
 axios.defaults.baseURL = "/";
 
@@ -12,8 +12,8 @@ const setAuthHeaders = (setLoading = () => null) => {
       .querySelector('[name="csrf-token"]')
       .getAttribute("content"),
   };
-  const token = getFromLocalStorage("authToken");
-  const email = getFromLocalStorage("authEmail");
+  const token = "";
+  const email = "";
   if (token && email) {
     axios.defaults.headers["X-Auth-Email"] = email;
     axios.defaults.headers["X-Auth-Token"] = token;
@@ -30,7 +30,7 @@ const handleSuccessResponse = response => {
   if (response) {
     response.success = response.status === 200;
     if (response.data.notice) {
-      Toastr.success(response.data.notice);
+      // Toastr.success(response.data.notice);
     }
   }
 
@@ -40,9 +40,9 @@ const handleSuccessResponse = response => {
 const handleErrorResponse = (error, authDispatch) => {
   if (error.response?.status === 401) {
     authDispatch({ type: "LOGOUT" });
-    Toastr.error(error.response?.data?.error);
+    // Toastr.error(error.response?.data?.error);
   } else {
-    Toastr.error(error.response?.data?.error || error.message);
+    // Toastr.error(error.response?.data?.error || error.message);
   }
 
   return Promise.reject(error);
