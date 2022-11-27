@@ -9,4 +9,18 @@ class TasksController < ApplicationController
   def show
     @task = Task.find_by(slug: params[:slug])
   end
+
+  def create
+    task = Task.new(task_params)
+    # BANG: which will raise an exception in case an error is encountered while saving the task record.
+    task.save!
+
+    respond_with_success(t("successfully_created"))
+  end
+
+  private
+
+    def task_params
+      params.require(:task).permit(:title)
+    end
 end

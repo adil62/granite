@@ -10,6 +10,10 @@ class Task < ApplicationRecord
 
   before_create :set_slug
 
+  def errors_to_sentence
+    errors.full_messages.to_sentence
+  end
+
   private
 
     def set_slug
