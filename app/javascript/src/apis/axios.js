@@ -1,6 +1,9 @@
 import axios from "axios";
-// import { Toastr } from "neetoui";
-// import { getFromLocalStorage } from "utils/storage";
+
+import Toastr from "components/Common/Toastr";
+import { setToLocalStorage, getFromLocalStorage } from "utils/storage";
+
+const DEFAULT_ERROR_NOTIFICATION = "Something went wrong!";
 
 axios.defaults.baseURL = "/";
 
@@ -12,8 +15,8 @@ const setAuthHeaders = (setLoading = () => null) => {
       .querySelector('[name="csrf-token"]')
       .getAttribute("content"),
   };
-  const token = "";
-  const email = "";
+  const token = getFromLocalStorage("authToken");
+  const email = getFromLocalStorage("authEmail");
   if (token && email) {
     axios.defaults.headers["X-Auth-Email"] = email;
     axios.defaults.headers["X-Auth-Token"] = token;
@@ -21,37 +24,37 @@ const setAuthHeaders = (setLoading = () => null) => {
   setLoading(false);
 };
 
-const resetAuthTokens = () => {
-  delete axios.defaults.headers["X-Auth-Email"];
-  delete axios.defaults.headers["X-Auth-Token"];
-};
-
 const handleSuccessResponse = response => {
   if (response) {
     response.success = response.status === 200;
     if (response.data.notice) {
-      // Toastr.success(response.data.notice);
+      Toastr.success(response.data.notice);
     }
   }
 
   return response;
 };
 
-const handleErrorResponse = (error, authDispatch) => {
-  if (error.response?.status === 401) {
-    authDispatch({ type: "LOGOUT" });
-    // Toastr.error(error.response?.data?.error);
-  } else {
-    // Toastr.error(error.response?.data?.error || error.message);
+const handleErrorResponse = axiosErrorObject => {
+  if (axiosErrorObject.response?.status === 401) {
+    setToLocalStorage({ authToken: null, email: null, userId: null });
+    setTimeout(() => (window.location.href = "/"), 2000);
   }
 
-  return Promise.reject(error);
+  Toastr.error(
+    axiosErrorObject.response?.data?.error || DEFAULT_ERROR_NOTIFICATION
+  );
+  if (axiosErrorObject.response?.status === 423) {
+    window.location.href = "/";
+  }
+
+  return Promise.reject(axiosErrorObject);
 };
 
-const registerIntercepts = authDispatch => {
+const registerIntercepts = () => {
   axios.interceptors.response.use(handleSuccessResponse, error =>
-    handleErrorResponse(error, authDispatch)
+    handleErrorResponse(error)
   );
 };
 
-export { setAuthHeaders, resetAuthTokens, registerIntercepts };
+export { setAuthHeaders, registerIntercepts };
