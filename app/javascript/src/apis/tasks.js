@@ -6,9 +6,12 @@ const create = payload =>
     task: payload,
   });
 
+const show = slug => axios.get(`/tasks/${slug}`);
+
 const tasksApi = {
   list,
   create,
+  show,
 };
 
 export default tasksApi;
