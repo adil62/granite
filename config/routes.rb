@@ -4,5 +4,5 @@ Rails.application.routes.draw do
   root "home#index"
   get "*path", to: "home#index", via: :all
 
-  resources :tasks, only: [:index, :create], param: :slug
+  resources :tasks, except: %i[new edit destroy], param: :slug
 end
