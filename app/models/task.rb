@@ -10,6 +10,18 @@ class Task < ApplicationRecord
 
   before_create :set_slug
 
+  # Use this for small querie like orderby, where
+  scope :with_juice, -> { where("juice > 0") }
+
+  # use class methods for larger queries
+  def self.by_audience(audience)
+    if audience == "children"
+      where("age < 13")
+    else
+      where("age >= 13")
+    end
+  end
+
   def errors_to_sentence
     errors.full_messages.to_sentence
   end
