@@ -10,6 +10,8 @@ class Task < ApplicationRecord
 
   before_create :set_slug
 
+  belongs_to :assigned_user, foreign_key: "assigned_user_id", class_name: "User"
+
   # Use this for small querie like orderby, where
   scope :with_juice, -> { where("juice > 0") }
 
