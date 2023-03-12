@@ -10,7 +10,7 @@ class TasksController < ApplicationController
 
 
   def show
-    render_json({ task: @task, assigned_user: @task.assigned_user })
+    render
   end
 
   def create
