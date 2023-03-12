@@ -5,4 +5,5 @@ Rails.application.routes.draw do
   get "*path", to: "home#index", via: :all
 
   resources :tasks, except: %i[new edit], param: :slug
+  resources :users, only: :index
 end
