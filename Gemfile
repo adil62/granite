@@ -54,3 +54,5 @@ gem "tzinfo-data", platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 gem "react-rails"
 gem "rubocop"
 gem "webpacker"
+
+gem "bcrypt", "~> 3.1.13"
