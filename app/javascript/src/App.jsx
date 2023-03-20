@@ -3,15 +3,19 @@ import React, { useEffect, useState } from "react";
 import { Route, Switch, BrowserRouter as Router } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 
+import { Login, Signup } from "components/Authentication";
+import PrivateRoute from "components/Common/PrivateRoute";
+
 import { registerIntercepts, setAuthHeaders } from "./apis/axios";
 import { initializeLogger } from "./common/logger";
-import Signup from "./components/Authentication/Signup";
 import Dashboard from "./components/Dashboard";
 import PageLoader from "./components/PageLoader";
 import { CreateTask, ShowTask, EditTask } from "./components/Tasks";
 
 const App = () => {
   const [loading, setLoading] = useState(true);
+  const authToken = getFromLocalStorage("authToken");
+  const isLoggedIn = !either(isNil, isEmpty)(authToken);
 
   useEffect(() => {
     initializeLogger();
@@ -36,6 +40,13 @@ const App = () => {
         <Route exact component={CreateTask} path="/tasks/create" />
         <Route exact component={Dashboard} path="/dashboard" />
         <Route exact component={Signup} path="/signup" />
+        <Route exact component={Login} path="/login" />
+        <PrivateRoute
+          component={Dashboard}
+          condition={isLoggedIn}
+          path="/"
+          redirectRoute="/login"
+        />
       </Switch>
     </Router>
   );
